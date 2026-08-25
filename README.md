@@ -20,6 +20,18 @@
   <img src="https://img.shields.io/badge/vite-8-%2300ff41?style=flat-square&logo=vite&labelColor=%230a0a0f" alt="Vite" />
 </p>
 
+<p align="center">
+  <a href="https://x1vi.github.io/loot-games/">
+    <img src="https://img.shields.io/badge/LIVE_DEMO-%2300ff41?style=for-the-badge&logo=githubpages&labelColor=%230a0a0f" alt="Live Demo" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://x1vi.github.io/loot-games/">
+    <img src="https://img.shields.io/badge/🚀_LIVE_DEMO-%2300ff41?style=for-the-badge&logo=githubpages&logoColor=white&labelColor=%230a0a0f" alt="Live Demo" />
+  </a>
+</p>
+
 ---
 
 ## 🔍 Overview
