@@ -109,9 +109,17 @@ export function Deals() {
   const [sortBy, setSortBy] = useState('Deal Rating')
   const [maxPrice, setMaxPrice] = useState('15')
   const [minRating, setMinRating] = useState('0')
+  const [selectedStore, setSelectedStore] = useState('')
   const [page, setPage] = useState(0)
 
   const stores = useApi(fetchCheapSharkStores)
+
+  const storeList = useMemo(() => {
+    if (!stores.data) return []
+    return stores.data
+      .filter((s) => s.isActive)
+      .sort((a, b) => a.storeName.localeCompare(b.storeName))
+  }, [stores.data])
 
   const storeMap = useMemo(() => {
     if (!stores.data) return {} as Record<string, string>
@@ -128,11 +136,12 @@ export function Deals() {
         pageNumber: page,
         pageSize: 30,
         sortBy,
+        storeID: selectedStore || undefined,
         upperPrice: maxPrice ? Number(maxPrice) : undefined,
         steamRating: minRating ? Number(minRating) : undefined,
         onSale: 1,
       }),
-    [sortBy, maxPrice, minRating, page],
+    [sortBy, maxPrice, minRating, selectedStore, page],
   )
 
   return (
@@ -216,11 +225,31 @@ export function Deals() {
             }}
           />
         </label>
+        <label className="flex items-center gap-1 text-xs font-mono" style={{ color: 'var(--fg-muted)' }}>
+          STORE:
+          <select
+            value={selectedStore}
+            onChange={(e) => {
+              setSelectedStore(e.target.value)
+              setPage(0)
+            }}
+            className="px-2 py-1 text-xs font-mono border focus:outline-none cursor-pointer max-w-[140px]"
+            style={inputClasses()}
+            onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--border-bright)' }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--border-mid)' }}
+          >
+            <option value="">All Stores</option>
+            {storeList.map((s) => (
+              <option key={s.storeID} value={s.storeID}>{s.storeName}</option>
+            ))}
+          </select>
+        </label>
         <button
           onClick={() => {
             setSortBy('Deal Rating')
             setMaxPrice('15')
             setMinRating('0')
+            setSelectedStore('')
             setPage(0)
           }}
           className="text-xs font-mono border px-2 py-1 transition-colors cursor-pointer"
