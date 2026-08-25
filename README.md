@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/X1Vi/loot-terminal/actions/workflows/deploy.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/X1Vi/loot-terminal/deploy.yml?branch=main&style=flat-square&color=%2300ff41&labelColor=%230a0a0f" alt="CI" />
+  <a href="https://github.com/X1Vi/loot-games/actions/workflows/deploy.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/X1Vi/loot-games/deploy.yml?branch=main&style=flat-square&color=%2300ff41&labelColor=%230a0a0f" alt="CI" />
   </a>
   <a href="./LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-%2300ff41?style=flat-square&labelColor=%230a0a0f" alt="License" />
@@ -52,8 +52,8 @@
 ## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/X1Vi/loot-terminal.git
-cd loot-terminal
+git clone https://github.com/X1Vi/loot-games.git
+cd loot-games
 npm install
 npm run dev        # Start dev server at http://localhost:5173
 ```
@@ -184,7 +184,7 @@ MIT © [X1Vi](https://github.com/X1Vi)
 **X1Vi**
 
 - GitHub: [@X1Vi](https://github.com/X1Vi)
-- Project URL: [https://github.com/X1Vi/loot-terminal](https://github.com/X1Vi/loot-terminal)
+- Project URL: [https://github.com/X1Vi/loot-games](https://github.com/X1Vi/loot-games)
 
 ---
 
