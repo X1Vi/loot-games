@@ -81,9 +81,9 @@ export type TabId = 'free' | 'deals' | 'about'
 export type ThemeId = 'matrix' | 'amber' | 'cyber' | 'mono' | 'retro'
 
 export const THEMES: { id: ThemeId; label: string; swatch: string }[] = [
-  { id: 'matrix', label: 'Matrix', swatch: '#00ff41' },
-  { id: 'amber', label: 'Amber', swatch: '#ffb000' },
-  { id: 'cyber', label: 'Cyber', swatch: '#00f0ff' },
-  { id: 'mono', label: 'Mono', swatch: '#e0e0e0' },
-  { id: 'retro', label: 'Retro', swatch: '#33ff33' },
+  { id: 'matrix', label: 'Matrix', swatch: '#6fcf8a' },
+  { id: 'amber', label: 'Amber', swatch: '#d4a040' },
+  { id: 'cyber', label: 'Cyber', swatch: '#67e8f9' },
+  { id: 'mono', label: 'Mono', swatch: '#c8c8c8' },
+  { id: 'retro', label: 'Retro', swatch: '#7bc87b' },
 ]

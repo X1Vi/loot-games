@@ -1,4 +1,5 @@
 import type { EpicGame } from '../types'
+import { fetchWithCorsFallback } from './utils'
 
 const EPIC_API =
   'https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale=en-US&country=US&allowCountries=US'
@@ -63,7 +64,7 @@ interface EpicResponse {
 }
 
 export async function fetchEpicFreeGames(): Promise<EpicGame[]> {
-  const res = await fetch(EPIC_API)
+  const res = await fetchWithCorsFallback(EPIC_API)
   if (!res.ok) throw new Error(`Epic API error: ${res.status}`)
   const json: EpicResponse = await res.json()
   const elements = json.data.Catalog.searchStore.elements
