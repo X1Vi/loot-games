@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useApi } from '../hooks/useApi'
-import { fetchCheapSharkDeals } from '../api/cheapshark'
+import { fetchCheapSharkDeals, fetchCheapSharkStores } from '../api/cheapshark'
 import type { CheapSharkDeal } from '../types'
 
-function DealCard({ deal }: { deal: CheapSharkDeal }) {
+function DealCard({ deal, storeName }: { deal: CheapSharkDeal; storeName: string }) {
   const savings = Math.round(Number(deal.savings))
   const salePrice = Number(deal.salePrice)
   const normalPrice = Number(deal.normalPrice)
@@ -50,7 +50,7 @@ function DealCard({ deal }: { deal: CheapSharkDeal }) {
                 backgroundColor: 'var(--accent-bg)',
               }}
             >
-              STORE {deal.storeID}
+              {storeName}
             </span>
             {deal.steamRatingPercent && Number(deal.steamRatingPercent) > 0 && (
               <span style={{ color: 'var(--fg-faint)' }}>
@@ -110,6 +110,17 @@ export function Deals() {
   const [maxPrice, setMaxPrice] = useState('15')
   const [minRating, setMinRating] = useState('0')
   const [page, setPage] = useState(0)
+
+  const stores = useApi(fetchCheapSharkStores)
+
+  const storeMap = useMemo(() => {
+    if (!stores.data) return {} as Record<string, string>
+    const map: Record<string, string> = {}
+    for (const s of stores.data) {
+      map[s.storeID] = s.storeName
+    }
+    return map
+  }, [stores.data])
 
   const deals = useApi(
     () =>
@@ -248,7 +259,7 @@ export function Deals() {
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
             {deals.data.map((deal) => (
-              <DealCard key={deal.dealID} deal={deal} />
+              <DealCard key={deal.dealID} deal={deal} storeName={storeMap[deal.storeID] || `Store ${deal.storeID}`} />
             ))}
           </div>
           <div className="flex items-center justify-center gap-3 mt-4 font-mono text-xs">
