@@ -3,7 +3,8 @@ import { useApi } from '../hooks/useApi'
 import { fetchGamerPowerGiveaways } from '../api/gamerpower'
 import { fetchEpicFreeGames } from '../api/epicgames'
 import { fetchSteamDBFeed, fetchITADFeed } from '../api/rssfeeds'
-import type { FreeGame, EpicGame, SteamDBItem, ITADItem } from '../types'
+import { buildCatalog } from '../lib/normalize'
+import type { MergedGame } from '../lib/normalize'
 
 function getTimeLeft(endDate: string): string {
   const diff = new Date(endDate).getTime() - Date.now()
@@ -15,49 +16,33 @@ function getTimeLeft(endDate: string): string {
   return `Ends in ${hours}h ${mins}m`
 }
 
-function GameCard({
-  title,
-  source,
-  url,
-  platforms,
-  endDate,
-  worth,
-  image,
-}: {
-  title: string
-  source: string
-  url: string
-  platforms?: string
-  endDate?: string | null
-  worth?: string
-  image?: string
-}) {
-  const endsIn = endDate ? getTimeLeft(endDate) : null
-  const expired = endDate ? new Date(endDate) < new Date() : false
+function GameCard({ game }: { game: MergedGame }) {
+  const endsIn = game.endDate ? getTimeLeft(game.endDate) : null
+  const expired = game.endDate ? new Date(game.endDate) < new Date() : false
+  const isMerged = game.sources.length > 1
 
   return (
     <a
-      href={url}
+      href={game.url}
       target="_blank"
       rel="noopener noreferrer"
       className="block border p-3 transition-colors group"
       style={{
-        borderColor: 'var(--border-subtle)',
+        borderColor: isMerged ? 'var(--border-bright)' : 'var(--border-subtle)',
         backgroundColor: 'var(--bg-card)',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.borderColor = 'var(--border-bright)'
-        e.currentTarget.style.opacity = '1'
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = 'var(--border-subtle)'
+        e.currentTarget.style.borderColor = isMerged ? 'var(--border-bright)' : 'var(--border-subtle)'
       }}
     >
       <div className="flex gap-3">
-        {image && (
+        {game.image && (
           <img
-            src={image}
-            alt={title}
+            src={game.image}
+            alt={game.title}
             className="w-16 h-9 object-cover border flex-shrink-0"
             style={{ borderColor: 'var(--border-subtle)' }}
             loading="lazy"
@@ -68,36 +53,51 @@ function GameCard({
             className="text-sm font-mono truncate group-hover:underline"
             style={{ color: 'var(--fg-primary)' }}
           >
-            {title}
+            {game.title}
           </div>
-          <div className="flex flex-wrap gap-2 mt-1 text-xs font-mono">
-            <span
-              className="px-1.5 py-0.5"
-              style={{
-                color: 'var(--fg-muted)',
+
+          <div className="flex flex-wrap gap-1.5 mt-1 text-xs font-mono">
+            {game.sources.map((src) => (
+              <span
+                key={src}
+                className="px-1.5 py-0.5 tracking-wide"
+                style={{
+                  color: 'var(--fg-muted)',
+                  backgroundColor: 'var(--accent-bg)',
+                }}
+              >
+                {src.toUpperCase()}
+              </span>
+            ))}
+            {isMerged && (
+              <span className="px-1.5 py-0.5" style={{
+                color: 'var(--accent-yellow)',
                 backgroundColor: 'var(--accent-bg)',
-              }}
-            >
-              {source.toUpperCase()}
-            </span>
-            {platforms && (
-              <span style={{ color: 'var(--fg-faint)' }}>{platforms}</span>
+              }}>
+                +{game.sources.length - 1} src
+              </span>
             )}
-            {worth && worth !== 'N/A' && (
-              <span style={{ color: 'var(--accent-yellow)' }}>{worth}</span>
+            {game.platforms.length > 0 && (
+              <span style={{ color: 'var(--fg-faint)' }}>
+                {game.platforms.join(', ')}
+              </span>
+            )}
+            {game.worth && (
+              <span style={{ color: 'var(--accent-yellow)' }}>{game.worth}</span>
             )}
           </div>
+
           <div className="mt-1 text-xs font-mono">
             {expired ? (
               <span style={{ color: 'var(--accent-red)' }}>EXPIRED</span>
             ) : endsIn ? (
               <span style={{ color: 'var(--fg-faint)' }}>{endsIn}</span>
-            ) : endDate ? (
+            ) : game.endDate ? (
               <span style={{ color: 'var(--fg-faint)' }}>
-                Ends: {new Date(endDate).toLocaleDateString()}
+                Ends: {new Date(game.endDate).toLocaleDateString()}
               </span>
             ) : (
-              <span style={{ color: 'var(--fg-faint)' }}>--</span>
+              <span style={{ color: 'var(--fg-subtle)' }}>No end date</span>
             )}
           </div>
         </div>
@@ -106,7 +106,7 @@ function GameCard({
   )
 }
 
-function Spinner() {
+function Spinner({ label = 'FETCHING DATA' }: { label?: string }) {
   return (
     <div
       className="flex items-center gap-2 font-mono text-sm py-8"
@@ -116,115 +116,29 @@ function Spinner() {
         className="inline-block w-2 h-4 animate-pulse"
         style={{ backgroundColor: 'var(--fg-muted)' }}
       />
-      <span>FETCHING DATA</span>
+      <span>{label}</span>
     </div>
   )
 }
 
-function SourceSection({
-  title,
-  source,
-  loading,
-  error,
-  data,
-  renderItem,
-}: {
-  title: string
-  source: string
-  loading: boolean
-  error: string | null
-  data: unknown
-  renderItem: (item: unknown) => {
-    title: string
-    url: string
-    platforms?: string
-    endDate?: string | null
-    worth?: string
-    image?: string
-  }
+function StatusBadge({ label, count, color }: {
+  label: string
+  count: number
+  color: string
 }) {
-  const items = useMemo(() => (Array.isArray(data) ? data : []), [data])
-
   return (
-    <section className="mb-6">
-      <div
-        className="border-b pb-1 mb-2"
-        style={{ borderColor: 'var(--border-subtle)' }}
-      >
-        <span
-          className="font-mono text-sm font-bold"
-          style={{ color: 'var(--fg-muted)' }}
-        >
-          [{source}] {title}
-        </span>
-        {!loading && (
-          <span className="font-mono text-xs ml-2" style={{ color: 'var(--fg-faint)' }}>
-            ({items.length})
-          </span>
-        )}
-      </div>
-      {loading ? (
-        <Spinner />
-      ) : error ? (
-        <div className="font-mono text-sm py-2" style={{ color: 'var(--accent-red)' }}>
-          ! ERR: {error}
-        </div>
-      ) : items.length === 0 ? (
-        <div className="font-mono text-sm py-2" style={{ color: 'var(--fg-faint)' }}>
-          No items found
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-          {items.map((item, i) => {
-            const rendered = renderItem(item)
-            return <GameCard key={i} {...rendered} source={source} />
-          })}
-        </div>
-      )}
-    </section>
+    <span
+      className="px-2 py-1 text-xs font-mono tracking-wide"
+      style={{
+        color: `var(--${color})`,
+        backgroundColor: 'var(--accent-bg)',
+        border: '1px solid',
+        borderColor: 'var(--border-subtle)',
+      }}
+    >
+      {label}: {count}
+    </span>
   )
-}
-
-function mapGamerPower(item: unknown) {
-  const g = item as FreeGame
-  return {
-    title: g.title,
-    url: g.open_giveaway_url,
-    platforms: g.platforms,
-    endDate: g.end_date,
-    worth: g.worth,
-    image: g.thumbnail,
-  }
-}
-
-function mapEpic(item: unknown) {
-  const g = item as EpicGame
-  const image = g.keyImages.find((i) => i.type === 'Thumbnail')?.url
-  return {
-    title: g.title,
-    url: `https://store.epicgames.com/en-US/p/${g.productSlug ?? g.urlSlug}`,
-    endDate: g.expiryDate,
-    image,
-  }
-}
-
-function mapSteamDB(item: unknown) {
-  const i = item as SteamDBItem
-  return {
-    title: i.title,
-    url: i.link,
-    endDate: null,
-  }
-}
-
-function mapITAD(item: unknown) {
-  const i = item as ITADItem
-  return {
-    title: i.title,
-    url: i.link,
-    platforms: i.store,
-    endDate: null,
-  }
 }
 
 export function FreeGames() {
@@ -233,15 +147,72 @@ export function FreeGames() {
   const sd = useApi(fetchSteamDBFeed)
   const it = useApi(fetchITADFeed)
 
+  const loading = gp.loading || ep.loading || sd.loading || it.loading
+  const error = gp.error || ep.error || sd.error || it.error
+
+  const catalog = useMemo(() => {
+    if (!gp.data || !ep.data || !sd.data || !it.data) return null
+    return buildCatalog({
+      gamerpower: gp.data,
+      epic: ep.data,
+      steamdb: sd.data,
+      itad: it.data,
+    })
+  }, [gp.data, ep.data, sd.data, it.data])
+
+  const rawCount = (gp.data?.length ?? 0) + (ep.data?.length ?? 0) +
+    (sd.data?.length ?? 0) + (it.data?.length ?? 0)
+
   return (
     <div className="p-4">
-      <div className="mb-4 font-mono text-xs" style={{ color: 'var(--fg-faint)' }}>
-        $ ./fetch_free_games.sh --all-sources
+      <div className="mb-3 font-mono text-xs" style={{ color: 'var(--fg-faint)' }}>
+        $ ./fetch_free_games.sh --dedup --merge
       </div>
-      <SourceSection title="Giveaways" source="gamerpower" {...gp} data={gp.data} renderItem={mapGamerPower} />
-      <SourceSection title="Free Games" source="epic" {...ep} data={ep.data} renderItem={mapEpic} />
-      <SourceSection title="Steam Free" source="steamdb" {...sd} data={sd.data} renderItem={mapSteamDB} />
-      <SourceSection title="Free Deals" source="itad" {...it} data={it.data} renderItem={mapITAD} />
+
+      {/* Loading state */}
+      {loading && (
+        <div className="space-y-2">
+          {gp.loading && <Spinner label="GAMERPOWER" />}
+          {ep.loading && <Spinner label="EPIC" />}
+          {sd.loading && <Spinner label="STEAMDB" />}
+          {it.loading && <Spinner label="ITAD" />}
+        </div>
+      )}
+
+      {/* Error state */}
+      {!loading && error && (
+        <div className="font-mono text-sm py-4" style={{ color: 'var(--accent-red)' }}>
+          ! ERR: {error}
+        </div>
+      )}
+
+      {/* Stats bar */}
+      {!loading && catalog && (
+        <div className="flex flex-wrap gap-2 mb-4 pb-3 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+          <StatusBadge label="TOTAL" count={catalog.merged.length} color="fg-primary" />
+          <StatusBadge label="RAW" count={rawCount} color="fg-dim" />
+          {catalog.dedupCount > 0 && (
+            <StatusBadge label="DEDUPED" count={catalog.dedupCount} color="accent-yellow" />
+          )}
+          <StatusBadge label="SOURCES" count={4} color="fg-faint" />
+        </div>
+      )}
+
+      {/* Empty state */}
+      {!loading && !error && catalog && catalog.merged.length === 0 && (
+        <div className="font-mono text-sm py-4" style={{ color: 'var(--fg-faint)' }}>
+          No free games found
+        </div>
+      )}
+
+      {/* Merged game grid */}
+      {!loading && catalog && catalog.merged.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+          {catalog.merged.map((game) => (
+            <GameCard key={game.canonicalKey} game={game} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
