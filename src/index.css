@@ -1,0 +1,215 @@
+@import "tailwindcss";
+
+@theme {
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", "Source Code Pro",
+    "IBM Plex Mono", "Consolas", "Courier New", monospace;
+}
+
+:root,
+[data-theme="matrix"] {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #0d0d14;
+  --fg-primary: #00ff41;
+  --fg-muted: rgba(0, 255, 65, 0.70);
+  --fg-dim: rgba(0, 255, 65, 0.50);
+  --fg-faint: rgba(0, 255, 65, 0.30);
+  --fg-subtle: rgba(0, 255, 65, 0.20);
+  --border-subtle: rgba(0, 255, 65, 0.10);
+  --border-mid: rgba(0, 255, 65, 0.20);
+  --border-bright: rgba(0, 255, 65, 0.50);
+  --accent-bg: rgba(0, 255, 65, 0.05);
+  --accent-bg-hover: rgba(0, 255, 65, 0.10);
+  --bg-header: #0d0d14;
+  --bg-card: #0d0d14;
+  --accent-yellow: rgba(250, 204, 21, 0.70);
+  --accent-red: rgba(248, 113, 113, 0.60);
+  --accent-green: rgba(74, 222, 128, 0.70);
+  --scanline-opacity: 0.03;
+  --scrollbar-thumb: rgba(0, 255, 65, 0.15);
+  --scrollbar-hover: rgba(0, 255, 65, 0.30);
+  --selection-bg: rgba(0, 255, 65, 0.30);
+  --selection-fg: #00ff41;
+  --input-bg: #0a0a0f;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --font-smoothing: none;
+}
+
+[data-theme="amber"] {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111111;
+  --fg-primary: #ffb000;
+  --fg-muted: rgba(255, 176, 0, 0.70);
+  --fg-dim: rgba(255, 176, 0, 0.50);
+  --fg-faint: rgba(255, 176, 0, 0.30);
+  --fg-subtle: rgba(255, 176, 0, 0.20);
+  --border-subtle: rgba(255, 176, 0, 0.10);
+  --border-mid: rgba(255, 176, 0, 0.20);
+  --border-bright: rgba(255, 176, 0, 0.50);
+  --accent-bg: rgba(255, 176, 0, 0.05);
+  --accent-bg-hover: rgba(255, 176, 0, 0.10);
+  --bg-header: #111111;
+  --bg-card: #111111;
+  --accent-yellow: rgba(255, 200, 50, 0.70);
+  --accent-red: rgba(255, 100, 80, 0.60);
+  --accent-green: rgba(255, 176, 0, 0.70);
+  --scanline-opacity: 0.04;
+  --scrollbar-thumb: rgba(255, 176, 0, 0.15);
+  --scrollbar-hover: rgba(255, 176, 0, 0.30);
+  --selection-bg: rgba(255, 176, 0, 0.30);
+  --selection-fg: #ffb000;
+  --input-bg: #0a0a0a;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --font-smoothing: none;
+}
+
+[data-theme="cyber"] {
+  --bg-primary: #060b14;
+  --bg-secondary: #0a1120;
+  --fg-primary: #00f0ff;
+  --fg-muted: rgba(0, 240, 255, 0.70);
+  --fg-dim: rgba(0, 240, 255, 0.50);
+  --fg-faint: rgba(0, 240, 255, 0.30);
+  --fg-subtle: rgba(0, 240, 255, 0.20);
+  --border-subtle: rgba(0, 240, 255, 0.10);
+  --border-mid: rgba(0, 240, 255, 0.20);
+  --border-bright: rgba(0, 240, 255, 0.50);
+  --accent-bg: rgba(0, 240, 255, 0.05);
+  --accent-bg-hover: rgba(0, 240, 255, 0.10);
+  --bg-header: #0a1120;
+  --bg-card: #0a1120;
+  --accent-yellow: rgba(255, 215, 0, 0.70);
+  --accent-red: rgba(255, 80, 120, 0.60);
+  --accent-green: rgba(0, 240, 255, 0.70);
+  --scanline-opacity: 0.04;
+  --scrollbar-thumb: rgba(0, 240, 255, 0.15);
+  --scrollbar-hover: rgba(0, 240, 255, 0.30);
+  --selection-bg: rgba(0, 240, 255, 0.30);
+  --selection-fg: #00f0ff;
+  --input-bg: #060b14;
+  --shadow-color: rgba(0, 40, 80, 0.4);
+  --font-smoothing: none;
+}
+
+[data-theme="mono"] {
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --fg-primary: #e0e0e0;
+  --fg-muted: rgba(224, 224, 224, 0.70);
+  --fg-dim: rgba(224, 224, 224, 0.50);
+  --fg-faint: rgba(224, 224, 224, 0.30);
+  --fg-subtle: rgba(224, 224, 224, 0.20);
+  --border-subtle: rgba(224, 224, 224, 0.10);
+  --border-mid: rgba(224, 224, 224, 0.20);
+  --border-bright: rgba(224, 224, 224, 0.50);
+  --accent-bg: rgba(224, 224, 224, 0.05);
+  --accent-bg-hover: rgba(224, 224, 224, 0.10);
+  --bg-header: #0a0a0a;
+  --bg-card: #0a0a0a;
+  --accent-yellow: rgba(200, 200, 200, 0.70);
+  --accent-red: rgba(255, 150, 150, 0.60);
+  --accent-green: rgba(180, 224, 180, 0.70);
+  --scanline-opacity: 0.02;
+  --scrollbar-thumb: rgba(224, 224, 224, 0.15);
+  --scrollbar-hover: rgba(224, 224, 224, 0.30);
+  --selection-bg: rgba(224, 224, 224, 0.30);
+  --selection-fg: #000000;
+  --input-bg: #000000;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --font-smoothing: none;
+}
+
+[data-theme="retro"] {
+  --bg-primary: #0c1c0c;
+  --bg-secondary: #102210;
+  --fg-primary: #33ff33;
+  --fg-muted: rgba(51, 255, 51, 0.70);
+  --fg-dim: rgba(51, 255, 51, 0.50);
+  --fg-faint: rgba(51, 255, 51, 0.30);
+  --fg-subtle: rgba(51, 255, 51, 0.20);
+  --border-subtle: rgba(51, 255, 51, 0.10);
+  --border-mid: rgba(51, 255, 51, 0.20);
+  --border-bright: rgba(51, 255, 51, 0.50);
+  --accent-bg: rgba(51, 255, 51, 0.03);
+  --accent-bg-hover: rgba(51, 255, 51, 0.08);
+  --bg-header: #102210;
+  --bg-card: #102210;
+  --accent-yellow: rgba(180, 255, 100, 0.70);
+  --accent-red: rgba(255, 100, 100, 0.60);
+  --accent-green: rgba(51, 255, 51, 0.70);
+  --scanline-opacity: 0.06;
+  --scrollbar-thumb: rgba(51, 255, 51, 0.10);
+  --scrollbar-hover: rgba(51, 255, 51, 0.20);
+  --selection-bg: rgba(51, 255, 51, 0.25);
+  --selection-fg: #0c1c0c;
+  --input-bg: #0c1c0c;
+  --shadow-color: rgba(0, 30, 0, 0.5);
+  --font-smoothing: none;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-hover);
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-primary);
+  color: var(--fg-primary);
+  font-family: var(--font-mono);
+  -webkit-font-smoothing: var(--font-smoothing, none);
+  -moz-osx-font-smoothing: unset;
+}
+
+/* Scanline overlay */
+.scanlines::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: var(--scanline-opacity);
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    var(--shadow-color) 2px,
+    var(--shadow-color) 4px
+  );
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
