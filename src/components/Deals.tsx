@@ -110,6 +110,8 @@ export function Deals() {
   const [maxPrice, setMaxPrice] = useState('15')
   const [minRating, setMinRating] = useState('0')
   const [selectedStore, setSelectedStore] = useState('')
+  const [searchTitle, setSearchTitle] = useState('')
+  const [searchInput, setSearchInput] = useState('')
   const [page, setPage] = useState(0)
 
   const stores = useApi(fetchCheapSharkStores)
@@ -137,11 +139,12 @@ export function Deals() {
         pageSize: 30,
         sortBy,
         storeID: selectedStore || undefined,
+        title: searchTitle || undefined,
         upperPrice: maxPrice ? Number(maxPrice) : undefined,
         steamRating: minRating ? Number(minRating) : undefined,
         onSale: 1,
       }),
-    [sortBy, maxPrice, minRating, selectedStore, page],
+    [sortBy, maxPrice, minRating, selectedStore, searchTitle, page],
   )
 
   return (
@@ -243,6 +246,31 @@ export function Deals() {
               <option key={s.storeID} value={s.storeID}>{s.storeName}</option>
             ))}
           </select>
+        </label>
+        <label className="flex items-center gap-1 text-xs font-mono" style={{ color: 'var(--fg-muted)' }}>
+          SEARCH:
+          <input
+            type="text"
+            value={searchInput}
+            placeholder="game name..."
+            onChange={(e) => setSearchInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                setSearchTitle(searchInput)
+                setPage(0)
+              }
+            }}
+            className="px-2 py-1 w-28 text-xs font-mono border focus:outline-none"
+            style={inputClasses()}
+            onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--border-bright)' }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-mid)'
+              if (searchInput !== searchTitle) {
+                setSearchTitle(searchInput)
+                setPage(0)
+              }
+            }}
+          />
         </label>
         <button
           onClick={() => {
