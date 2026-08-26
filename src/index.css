@@ -208,3 +208,12 @@ body {
 .animate-blink {
   animation: blink 1s step-end infinite;
 }
+
+/* Nav scroll — clean hidden scrollbar for the tab bar */
+.nav-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.nav-scroll::-webkit-scrollbar {
+  display: none;
+}
