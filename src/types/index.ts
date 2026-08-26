@@ -76,7 +76,7 @@ export interface ITADItem {
   publishedDate: string
 }
 
-export type TabId = 'free' | 'deals' | 'about'
+export type TabId = 'free' | 'deals' | 'stats' | 'about'
 
 export type ThemeId = 'matrix' | 'amber' | 'cyber' | 'mono' | 'retro'
 

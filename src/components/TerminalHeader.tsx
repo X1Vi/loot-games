@@ -5,7 +5,8 @@ import { useState, useRef, useEffect } from 'react'
 const TABS: { id: TabId; label: string; shortcut: string }[] = [
   { id: 'free', label: 'FREE', shortcut: 'F1' },
   { id: 'deals', label: 'DEALS', shortcut: 'F2' },
-  { id: 'about', label: 'ABOUT', shortcut: 'F3' },
+  { id: 'stats', label: 'STATS', shortcut: 'F3' },
+  { id: 'about', label: 'ABOUT', shortcut: 'F4' },
 ]
 
 interface TerminalHeaderProps {

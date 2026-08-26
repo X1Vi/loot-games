@@ -6,12 +6,16 @@ import { About } from './components/About'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import type { TabId, ThemeId } from './types'
 
+import { Stats } from './components/Stats'
+
 function TabContent({ tab }: { tab: TabId }) {
   switch (tab) {
     case 'free':
       return <FreeGames />
     case 'deals':
       return <Deals />
+    case 'stats':
+      return <Stats />
     case 'about':
       return <About />
   }
@@ -36,7 +40,8 @@ export default function App() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'F1') handleTabChange('free')
       else if (e.key === 'F2') handleTabChange('deals')
-      else if (e.key === 'F3') handleTabChange('about')
+      else if (e.key === 'F3') handleTabChange('stats')
+      else if (e.key === 'F4') handleTabChange('about')
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
