@@ -1,4 +1,5 @@
 import type { CheapSharkDeal } from '../types'
+import { fetchWithCorsFallback } from './utils'
 
 const CHEAPSHARK_API = 'https://www.cheapshark.com/api/1.0/deals'
 
@@ -26,7 +27,7 @@ export async function fetchCheapSharkDeals(params?: {
     })
   }
 
-  const res = await fetch(url.toString())
+  const res = await fetchWithCorsFallback(url.toString())
   if (!res.ok) throw new Error(`CheapShark API error: ${res.status}`)
   return res.json()
 }
@@ -34,7 +35,7 @@ export async function fetchCheapSharkDeals(params?: {
 export async function fetchCheapSharkStores(): Promise<
   Array<{ storeID: string; storeName: string; isActive: number }>
 > {
-  const res = await fetch('https://www.cheapshark.com/api/1.0/stores')
+  const res = await fetchWithCorsFallback('https://www.cheapshark.com/api/1.0/stores')
   if (!res.ok) throw new Error(`CheapShark stores error: ${res.status}`)
   return res.json()
 }
