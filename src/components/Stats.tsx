@@ -122,11 +122,11 @@ const SOURCE_COLORS: Record<string, string> = {
 // ── Stats component ──────────────────────────────────────
 
 export function Stats() {
-  const gp = useApi(fetchGamerPowerGiveaways)
-  const ep = useApi(fetchEpicFreeGames)
-  const sd = useApi(fetchSteamDBFeed)
-  const it = useApi(fetchITADFeed)
-  const deals = useApi(() => fetchCheapSharkDeals({ onSale: 1, pageSize: 50 }))
+  const gp = useApi(fetchGamerPowerGiveaways, [], 'gamerpower')
+  const ep = useApi(fetchEpicFreeGames, [], 'epic')
+  const sd = useApi(fetchSteamDBFeed, [], 'steamdb')
+  const it = useApi(fetchITADFeed, [], 'itad')
+  const deals = useApi(() => fetchCheapSharkDeals({ onSale: 1, pageSize: 50 }), [], 'cheapshark:deals:stats')
 
   const loading = gp.loading || ep.loading || sd.loading || it.loading || deals.loading
 
@@ -276,7 +276,7 @@ export function Stats() {
       {freeEndingSoon.length > 0 && (
         <Section title="⚡ Ending Soon">
           <div className="text-xs font-mono mb-2" style={{ color: 'var(--fg-muted)' }}>
-            9 games expiring within 48 hours
+            {freeEndingSoon.length} game{freeEndingSoon.length === 1 ? '' : 's'} expiring within 48 hours
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-1.5">
             {freeEndingSoon.map((g, i) => {

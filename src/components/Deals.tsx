@@ -3,6 +3,13 @@ import { useApi } from '../hooks/useApi'
 import { fetchCheapSharkDeals, fetchCheapSharkStores } from '../api/cheapshark'
 import type { CheapSharkDeal } from '../types'
 
+const AFFILIATE_TAG = ''
+
+function dealUrl(dealID: string): string {
+  const base = `https://www.cheapshark.com/redirect?dealID=${dealID}`
+  return AFFILIATE_TAG ? `${base}&a=${AFFILIATE_TAG}` : base
+}
+
 function DealCard({ deal, storeName }: { deal: CheapSharkDeal; storeName: string }) {
   const savings = Math.round(Number(deal.savings))
   const salePrice = Number(deal.salePrice)
@@ -10,7 +17,7 @@ function DealCard({ deal, storeName }: { deal: CheapSharkDeal; storeName: string
 
   return (
     <a
-      href={`https://www.cheapshark.com/redirect?dealID=${deal.dealID}`}
+      href={dealUrl(deal.dealID)}
       target="_blank"
       rel="noopener noreferrer"
       className="block border p-3 transition-colors group"
@@ -114,7 +121,7 @@ export function Deals() {
   const [searchInput, setSearchInput] = useState('')
   const [page, setPage] = useState(0)
 
-  const stores = useApi(fetchCheapSharkStores)
+  const stores = useApi(fetchCheapSharkStores, [], 'cheapshark:stores', 24 * 60 * 60_000)
 
   const storeList = useMemo(() => {
     if (!stores.data) return []
@@ -145,6 +152,7 @@ export function Deals() {
         onSale: 1,
       }),
     [sortBy, maxPrice, minRating, selectedStore, searchTitle, page],
+    'cheapshark:deals',
   )
 
   return (
