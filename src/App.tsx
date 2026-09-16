@@ -26,7 +26,7 @@ function TabContent({ tab }: { tab: TabId }) {
 
 export default function App() {
   const [theme, setTheme] = useLocalStorage<ThemeId>('loot-terminal-theme', 'matrix')
-  const [activeTab, setActiveTab] = useState<TabId>('free')
+  const [activeTab, setActiveTab] = useState<TabId>('showcase')
   const [status, setStatus] = useState('READY')
   const apiCount = 5
 
