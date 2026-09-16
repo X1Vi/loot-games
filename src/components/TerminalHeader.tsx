@@ -4,9 +4,10 @@ import { useState, useRef, useEffect } from 'react'
 
 const TABS: { id: TabId; label: string; shortcut: string }[] = [
   { id: 'free', label: 'FREE', shortcut: 'F1' },
-  { id: 'deals', label: 'DEALS', shortcut: 'F2' },
-  { id: 'stats', label: 'STATS', shortcut: 'F3' },
-  { id: 'about', label: 'ABOUT', shortcut: 'F4' },
+  { id: 'showcase', label: 'SHOWCASE', shortcut: 'F2' },
+  { id: 'deals', label: 'DEALS', shortcut: 'F3' },
+  { id: 'stats', label: 'STATS', shortcut: 'F4' },
+  { id: 'about', label: 'ABOUT', shortcut: 'F5' },
 ]
 
 interface TerminalHeaderProps {

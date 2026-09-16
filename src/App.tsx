@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { TerminalHeader } from './components/TerminalHeader'
 import { FreeGames } from './components/FreeGames'
+import { Showcase } from './components/Showcase'
 import { Deals } from './components/Deals'
 import { About } from './components/About'
 import { useLocalStorage } from './hooks/useLocalStorage'
@@ -12,6 +13,8 @@ function TabContent({ tab }: { tab: TabId }) {
   switch (tab) {
     case 'free':
       return <FreeGames />
+    case 'showcase':
+      return <Showcase />
     case 'deals':
       return <Deals />
     case 'stats':
@@ -39,9 +42,10 @@ export default function App() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'F1') handleTabChange('free')
-      else if (e.key === 'F2') handleTabChange('deals')
-      else if (e.key === 'F3') handleTabChange('stats')
-      else if (e.key === 'F4') handleTabChange('about')
+      else if (e.key === 'F2') handleTabChange('showcase')
+      else if (e.key === 'F3') handleTabChange('deals')
+      else if (e.key === 'F4') handleTabChange('stats')
+      else if (e.key === 'F5') handleTabChange('about')
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)

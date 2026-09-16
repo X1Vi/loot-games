@@ -11,6 +11,7 @@ export interface NormalizedItem {
   platforms: string[]
   worth: string | null
   storeKey: string | null
+  publishedAt: string | null
 }
 
 export interface MergedGame {
@@ -24,6 +25,7 @@ export interface MergedGame {
   worth: string | null
   sources: string[]
   storeKeys: string[]
+  publishedAt: string | null
 }
 
 // ── Normalization patterns ──────────────────────────────────────────
@@ -108,6 +110,7 @@ function normalizeGamerPower(item: FreeGame): NormalizedItem | null {
     platforms: item.platforms ? item.platforms.split(/[,/]/).map((s) => s.trim()).filter(Boolean) : [],
     worth: item.worth || null,
     storeKey,
+    publishedAt: item.published_date || null,
   }
 }
 
@@ -126,6 +129,7 @@ function normalizeEpic(item: EpicGame): NormalizedItem | null {
     platforms: [],
     worth: null,
     storeKey,
+    publishedAt: item.effectiveDate || null,
   }
 }
 
@@ -142,6 +146,7 @@ function normalizeSteamDB(item: SteamDBItem): NormalizedItem | null {
     platforms: [],
     worth: null,
     storeKey,
+    publishedAt: item.publishedDate || null,
   }
 }
 
@@ -158,6 +163,7 @@ function normalizeITAD(item: ITADItem): NormalizedItem | null {
     platforms: [],
     worth: null,
     storeKey,
+    publishedAt: item.publishedDate || null,
   }
 }
 
@@ -287,6 +293,16 @@ function mergeGroup(canonicalKey: string, items: NormalizedItem[]): MergedGame {
   const gp = items.find((i) => i.worth)
   const worth = gp?.worth?.toUpperCase() === 'N/A' ? null : gp?.worth ?? null
 
+  // Published date: most recent across sources
+  const pubDates = items
+    .map((i) => i.publishedAt)
+    .filter((d): d is string => d !== null)
+    .map((d) => new Date(d))
+    .filter((d) => !isNaN(d.getTime()))
+  const publishedAt = pubDates.length > 0
+    ? new Date(Math.max(...pubDates.map((d) => d.getTime()))).toISOString()
+    : null
+
   return {
     canonicalKey,
     title,
@@ -298,6 +314,7 @@ function mergeGroup(canonicalKey: string, items: NormalizedItem[]): MergedGame {
     worth,
     sources,
     storeKeys,
+    publishedAt,
   }
 }
 

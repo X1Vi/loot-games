@@ -1,38 +1,33 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+
+const sessions = new Map<string, Set<string>>()
 
 export function useNewKeys(storageKey: string, keys: string[], ready = true): Set<string> {
-  const [newKeys, setNewKeys] = useState<Set<string>>(() => new Set())
-  const committed = useRef(false)
+  const [newKeys, setNewKeys] = useState<Set<string>>(
+    () => sessions.get(storageKey) ?? new Set(),
+  )
 
   useEffect(() => {
-    if (!ready || keys.length === 0 || committed.current) return
-    committed.current = true
+    if (!ready || keys.length === 0) return
 
-    let raw: string | null = null
-    try {
-      raw = window.localStorage.getItem(storageKey)
-    } catch {
+    if (sessions.has(storageKey)) {
+      setNewKeys(sessions.get(storageKey) as Set<string>)
       return
     }
 
-    if (raw === null) {
-      try {
-        window.localStorage.setItem(storageKey, JSON.stringify(keys))
-      } catch {
-        // ignore
-      }
-      return
-    }
-
-    let prev: string[] = []
+    let prev: string[] | null = null
     try {
-      prev = JSON.parse(raw) as string[]
+      const raw = window.localStorage.getItem(storageKey)
+      if (raw !== null) prev = JSON.parse(raw) as string[]
     } catch {
-      prev = []
+      prev = null
     }
 
-    const prevSet = new Set(prev)
-    setNewKeys(new Set(keys.filter((k) => !prevSet.has(k))))
+    const prevSet = new Set(prev ?? [])
+    const result = prev === null ? new Set<string>() : new Set(keys.filter((k) => !prevSet.has(k)))
+
+    sessions.set(storageKey, result)
+    setNewKeys(result)
 
     try {
       window.localStorage.setItem(storageKey, JSON.stringify(keys))
