@@ -5,7 +5,7 @@
 <p align="center">
   <strong>Real-time free game &amp; deal aggregator — terminal-style.</strong><br/>
   Monitors <em>GamerPower</em>, <em>Epic Games</em>, <em>SteamDB</em>, <em>IsThereAnyDeal</em>, and <em>CheapShark</em>.<br/>
-  <sub>100% client-side · Zero backend · Hosted on GitHub Pages</sub>
+  <sub>100% client-side · Zero backend · Hosted on Cloudflare Workers</sub>
 </p>
 
 <p align="center">
@@ -21,14 +21,8 @@
 </p>
 
 <p align="center">
-  <a href="https://x1vi.github.io/loot-games/">
-    <img src="https://img.shields.io/badge/LIVE_DEMO-%2300ff41?style=for-the-badge&logo=githubpages&labelColor=%230a0a0f" alt="Live Demo" />
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://x1vi.github.io/loot-games/">
-    <img src="https://img.shields.io/badge/🚀_LIVE_DEMO-%2300ff41?style=for-the-badge&logo=githubpages&logoColor=white&labelColor=%230a0a0f" alt="Live Demo" />
+  <a href="https://loot-games.x1vi.workers.dev/">
+    <img src="https://img.shields.io/badge/LIVE_DEMO-%2300ff41?style=for-the-badge&logo=cloudflareworkers&labelColor=%230a0a0f" alt="Live Demo" />
   </a>
 </p>
 
@@ -37,6 +31,8 @@
 ## 🔍 Overview
 
 **LOOT TERMINAL** is a unified, client-only web application that aggregates free game giveaways and game deals from five sources into a single terminal-themed dashboard. It was built by extracting, normalizing, and unifying the API calls from four open-source projects:
+
+> **Live:** https://loot-games.x1vi.workers.dev/
 
 | Source Project | Purpose | Contributed APIs |
 |---|---|---|
@@ -172,7 +168,7 @@ The UI uses a custom terminal aesthetic:
 | Language | TypeScript 6 |
 | Build Tool | Vite 8 |
 | Styling | Tailwind CSS 4 |
-| Deployment | GitHub Pages (via Actions) |
+| Deployment | Cloudflare Workers (static assets) |
 
 ---
 
