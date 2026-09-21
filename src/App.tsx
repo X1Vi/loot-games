@@ -3,6 +3,7 @@ import { TerminalHeader } from './components/TerminalHeader'
 import { FreeGames } from './components/FreeGames'
 import { Showcase } from './components/Showcase'
 import { Deals } from './components/Deals'
+import { Compare } from './components/Compare'
 import { About } from './components/About'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import type { TabId, ThemeId } from './types'
@@ -17,6 +18,8 @@ function TabContent({ tab }: { tab: TabId }) {
       return <Showcase />
     case 'deals':
       return <Deals />
+    case 'compare':
+      return <Compare />
     case 'stats':
       return <Stats />
     case 'about':
@@ -44,8 +47,9 @@ export default function App() {
       if (e.key === 'F1') handleTabChange('free')
       else if (e.key === 'F2') handleTabChange('showcase')
       else if (e.key === 'F3') handleTabChange('deals')
-      else if (e.key === 'F4') handleTabChange('stats')
-      else if (e.key === 'F5') handleTabChange('about')
+      else if (e.key === 'F4') handleTabChange('compare')
+      else if (e.key === 'F5') handleTabChange('stats')
+      else if (e.key === 'F6') handleTabChange('about')
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)

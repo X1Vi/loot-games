@@ -62,6 +62,41 @@ export interface CheapSharkDeal {
   thumb: string
 }
 
+export interface CheapSharkGameSearchResult {
+  gameID: string
+  steamAppID: string | null
+  cheapest: string
+  cheapestDealID: string
+  external: string
+  internalName: string
+  thumb: string
+}
+
+export interface CheapSharkSearchResultWithStore extends CheapSharkGameSearchResult {
+  cheapestStoreID: string | null
+}
+
+export interface CheapSharkStoreDeal {
+  storeID: string
+  dealID: string
+  price: string
+  retailPrice: string
+  savings: string
+}
+
+export interface CheapSharkGameDetails {
+  info: {
+    title: string
+    steamAppID: string | null
+    thumb: string
+  }
+  cheapestPriceEver: {
+    price: string
+    date: number
+  }
+  deals: CheapSharkStoreDeal[]
+}
+
 export interface SteamDBItem {
   title: string
   link: string
@@ -76,7 +111,7 @@ export interface ITADItem {
   publishedDate: string
 }
 
-export type TabId = 'free' | 'showcase' | 'deals' | 'stats' | 'about'
+export type TabId = 'free' | 'showcase' | 'deals' | 'compare' | 'stats' | 'about'
 
 export type ThemeId = 'matrix' | 'amber' | 'cyber' | 'mono' | 'retro'
 

@@ -6,8 +6,9 @@ const TABS: { id: TabId; label: string; shortcut: string }[] = [
   { id: 'free', label: 'FREE', shortcut: 'F1' },
   { id: 'showcase', label: 'SHOWCASE', shortcut: 'F2' },
   { id: 'deals', label: 'DEALS', shortcut: 'F3' },
-  { id: 'stats', label: 'STATS', shortcut: 'F4' },
-  { id: 'about', label: 'ABOUT', shortcut: 'F5' },
+  { id: 'compare', label: 'COMPARE', shortcut: 'F4' },
+  { id: 'stats', label: 'STATS', shortcut: 'F5' },
+  { id: 'about', label: 'ABOUT', shortcut: 'F6' },
 ]
 
 interface TerminalHeaderProps {

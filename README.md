@@ -49,8 +49,9 @@
 
 - **🎮 Free Games Explorer** — Browse current free game giveaways across GamerPower, Epic Games Store, SteamDB, and IsThereAnyDeal
 - **💰 Deal Tracker** — Search and filter game deals via CheapShark with sortable columns and pagination
+- **📊 Store Compare** — Search any game and compare its price across every store that sells it, with a per-store price graph, savings vs. retail, and historic-low detection
 - **🖥️ Terminal UI** — Retro green-on-black terminal aesthetic with scanline overlay, monospace typography, and blinking cursor
-- **⌨️ Keyboard Navigation** — `F1` / `F2` / `F3` to switch between tabs
+- **⌨️ Keyboard Navigation** — `F1`–`F6` to switch between tabs
 - **📦 Zero Dependencies on Backend** — Pure static site, hostable anywhere (GitHub Pages, Netlify, Vercel, any CDN)
 - **📱 Responsive** — Works on desktop, tablet, and mobile
 - **♿ Accessible** — Semantic HTML, keyboard navigable
@@ -108,6 +109,11 @@ The `dist/` directory is a fully self-contained static site. Drop it on any web 
 - **Returns:** Game deals with prices, savings, ratings, redirect links
 - **Auth:** None (public, CORS-enabled)
 
+#### Store comparison endpoints
+- **Search:** `https://www.cheapshark.com/api/1.0/games?title={query}&limit={n}` — resolve a title to a CheapShark `gameID`
+- **Details:** `https://www.cheapshark.com/api/1.0/games?id={gameID}` — every store listing for that game plus its cheapest price ever
+- **Stores:** `https://www.cheapshark.com/api/1.0/stores` — store names and activity status
+
 ---
 
 ## 🏗️ Architecture
@@ -127,11 +133,14 @@ loot-terminal/
 │   │   ├── TerminalHeader.tsx   #   Top nav bar with tabs
 │   │   ├── FreeGames.tsx        #   Free games dashboard
 │   │   ├── Deals.tsx            #   Deals browser with filters
+│   │   ├── Compare.tsx          #   Store-by-store price comparison
 │   │   ├── About.tsx            #   Info/about panel
 │   │   └── Output.tsx           #   Terminal output line
 │   ├── hooks/
 │   │   ├── useApi.ts            #   Generic async data fetcher
 │   │   └── useLocalStorage.ts   #   localStorage persistence
+│   ├── lib/
+│   │   └── compare.ts           #   Store price ranking + summary math
 │   ├── types/
 │   │   └── index.ts             #   Shared TypeScript types
 │   ├── App.tsx                   #   Root application shell

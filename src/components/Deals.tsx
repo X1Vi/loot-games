@@ -1,14 +1,11 @@
 import { useState, useMemo } from 'react'
 import { useApi } from '../hooks/useApi'
-import { fetchCheapSharkDeals, fetchCheapSharkStores } from '../api/cheapshark'
+import {
+  cheapsharkDealUrl,
+  fetchCheapSharkDeals,
+  fetchCheapSharkStores,
+} from '../api/cheapshark'
 import type { CheapSharkDeal } from '../types'
-
-const AFFILIATE_TAG = ''
-
-function dealUrl(dealID: string): string {
-  const base = `https://www.cheapshark.com/redirect?dealID=${dealID}`
-  return AFFILIATE_TAG ? `${base}&a=${AFFILIATE_TAG}` : base
-}
 
 function DealCard({ deal, storeName }: { deal: CheapSharkDeal; storeName: string }) {
   const savings = Math.round(Number(deal.savings))
@@ -17,7 +14,7 @@ function DealCard({ deal, storeName }: { deal: CheapSharkDeal; storeName: string
 
   return (
     <a
-      href={dealUrl(deal.dealID)}
+      href={cheapsharkDealUrl(deal.dealID)}
       target="_blank"
       rel="noopener noreferrer"
       className="block border p-3 transition-colors group"
