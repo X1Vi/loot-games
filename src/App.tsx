@@ -5,6 +5,7 @@ import { Showcase } from './components/Showcase'
 import { Deals } from './components/Deals'
 import { Compare } from './components/Compare'
 import { About } from './components/About'
+import { SocialLinks } from './components/SocialLinks'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import type { TabId, ThemeId } from './types'
 
@@ -93,7 +94,8 @@ export default function App() {
           </span>
         </div>
         <div className="flex items-center gap-4" style={{ color: 'var(--fg-faint)' }}>
-          <span>APIS: {apiCount}</span>
+          <SocialLinks />
+          <span className="hidden md:inline">APIS: {apiCount}</span>
           <span className="hidden sm:inline">LOOT TERMINAL v2.0.0</span>
           <span
             className="inline-block w-2 h-4 animate-pulse"

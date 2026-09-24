@@ -1,3 +1,5 @@
+import { SocialLinks } from './SocialLinks'
+
 export function About() {
   return (
     <div className="p-4 font-mono text-sm">
@@ -64,6 +66,13 @@ export function About() {
   and PriceStalker open-source projects.
 `}
       </pre>
+
+      <div className="mt-4 text-xs" style={{ color: 'var(--fg-faint)' }}>
+        $ donate --open
+      </div>
+      <div className="mt-2">
+        <SocialLinks />
+      </div>
     </div>
   )
 }
