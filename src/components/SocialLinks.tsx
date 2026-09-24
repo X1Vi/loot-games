@@ -1,5 +1,13 @@
 import type { ReactNode } from 'react'
-import { INSTAGRAM_URL, BUYMEACOFFEE_URL } from '../lib/links'
+import { INSTAGRAM_URL, BUYMEACOFFEE_URL, LIFE_SYS_URL } from '../lib/links'
+
+function PlayIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M8 5v14l11-7z" />
+    </svg>
+  )
+}
 
 function InstagramIcon() {
   return (
@@ -58,6 +66,12 @@ function SocialLink({ href, title, label, icon }: SocialLinkProps) {
 export function SocialLinks() {
   return (
     <div className="flex items-center gap-2">
+      <SocialLink
+        href={LIFE_SYS_URL}
+        title="Play LIFE.SYS — stocks + life sim, free in browser"
+        label="LIFE.SYS"
+        icon={<PlayIcon />}
+      />
       <SocialLink
         href={INSTAGRAM_URL}
         title="Follow @loot_games_84 on Instagram"

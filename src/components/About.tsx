@@ -1,4 +1,5 @@
 import { SocialLinks } from './SocialLinks'
+import { LIFE_SYS_URL } from '../lib/links'
 
 export function About() {
   return (
@@ -60,12 +61,42 @@ export function About() {
   Made by X1Vi
   https://github.com/X1Vi
 
+[ PROJECTS ]
+  LIFE.SYS — stocks + life sim, free in browser
+  https://x1vi.itch.io/life-sim
+
 [ ACKNOWLEDGMENTS ]
   This project aggregates APIs from:
   freebie-finder-bot, lootscraper, MercuryBot,
   and PriceStalker open-source projects.
 `}
       </pre>
+
+      <div className="mt-4 text-xs" style={{ color: 'var(--fg-faint)' }}>
+        $ projects --open
+      </div>
+      <div className="mt-2">
+        <a
+          href={LIFE_SYS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-mono border transition-colors"
+          style={{ borderColor: 'var(--border-mid)', color: 'var(--fg-dim)' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = 'var(--fg-primary)'
+            e.currentTarget.style.borderColor = 'var(--border-bright)'
+            e.currentTarget.style.backgroundColor = 'var(--accent-bg)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = 'var(--fg-dim)'
+            e.currentTarget.style.borderColor = 'var(--border-mid)'
+            e.currentTarget.style.backgroundColor = 'transparent'
+          }}
+        >
+          <span>▶</span>
+          <span>LIFE.SYS — stocks + life sim, free in browser</span>
+        </a>
+      </div>
 
       <div className="mt-4 text-xs" style={{ color: 'var(--fg-faint)' }}>
         $ donate --open

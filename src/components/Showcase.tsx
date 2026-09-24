@@ -7,6 +7,7 @@ import { fetchEpicFreeGames } from '../api/epicgames'
 import { fetchSteamDBFeed, fetchITADFeed } from '../api/rssfeeds'
 import { buildCatalog } from '../lib/normalize'
 import { downloadIcs } from '../lib/ics'
+import { LIFE_SYS_URL } from '../lib/links'
 import type { MergedGame } from '../lib/normalize'
 import type { FreeGame, EpicGame, SteamDBItem, ITADItem } from '../types'
 
@@ -147,6 +148,59 @@ function ShowcaseCard({ game, isNew, rank }: { game: MergedGame; isNew: boolean;
   )
 }
 
+function DevSpotlightCard() {
+  return (
+    <a
+      href={LIFE_SYS_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex flex-col border border-dashed transition-colors"
+      style={{ borderColor: 'var(--border-mid)', backgroundColor: 'var(--bg-card)' }}
+      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--border-bright)' }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-mid)' }}
+    >
+      <div
+        className="relative aspect-video overflow-hidden shrink-0 flex items-center justify-center"
+        style={{ backgroundColor: 'var(--bg-primary)' }}
+      >
+        <pre className="text-[10px] leading-tight font-mono" style={{ color: 'var(--fg-muted)' }}>
+{`┌─────────────────┐
+│  LIFE.SYS  v1   │
+│  > _            │
+└─────────────────┘`}
+        </pre>
+        <span
+          className="absolute top-2 left-2 px-1.5 py-0.5 text-[10px] font-mono tracking-wide"
+          style={{ color: 'var(--accent-yellow)', backgroundColor: 'rgba(0,0,0,0.6)' }}
+        >
+          FROM THE DEV
+        </span>
+      </div>
+
+      <div className="flex flex-col flex-1 p-3">
+        <div className="text-sm font-mono leading-snug group-hover:underline" style={{ color: 'var(--fg-primary)' }}>
+          LIFE.SYS
+        </div>
+        <div className="mt-1 text-xs font-mono leading-snug" style={{ color: 'var(--fg-muted)' }}>
+          Stocks + life sim, free in browser
+        </div>
+
+        <div className="flex flex-wrap gap-1.5 mt-2 text-[10px] font-mono">
+          {['BROWSER', 'WASM', 'NO ACCOUNT'].map((tag) => (
+            <span key={tag} className="px-1.5 py-0.5 tracking-wide" style={{ color: 'var(--fg-muted)', backgroundColor: 'var(--accent-bg)' }}>
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-auto pt-2 flex items-center justify-between text-xs font-mono">
+          <span style={{ color: 'var(--accent-green)' }}>PLAY FREE →</span>
+        </div>
+      </div>
+    </a>
+  )
+}
+
 export function Showcase() {
   const gp = useApi(fetchGamerPowerGiveaways, [], 'gamerpower')
   const ep = useApi(fetchEpicFreeGames, [], 'epic')
@@ -259,6 +313,7 @@ export function Showcase() {
           {games.map((game, i) => (
             <ShowcaseCard key={game.canonicalKey} game={game} isNew={newKeys.has(game.canonicalKey)} rank={i + 1} />
           ))}
+          <DevSpotlightCard />
         </div>
       )}
     </div>
