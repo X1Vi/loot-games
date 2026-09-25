@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, Fragment } from 'react'
 import { useApi } from '../hooks/useApi'
 import {
   cheapsharkDealUrl,
@@ -6,6 +6,7 @@ import {
   fetchCheapSharkStores,
 } from '../api/cheapshark'
 import type { CheapSharkDeal } from '../types'
+import { AdSlot } from './AdSlot'
 
 function DealCard({ deal, storeName }: { deal: CheapSharkDeal; storeName: string }) {
   const savings = Math.round(Number(deal.savings))
@@ -320,8 +321,11 @@ export function Deals() {
             {deals.data.length} deals loaded (page {page})
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-            {deals.data.map((deal) => (
-              <DealCard key={deal.dealID} deal={deal} storeName={storeMap[deal.storeID] || `Store ${deal.storeID}`} />
+            {deals.data.map((deal, i) => (
+              <Fragment key={deal.dealID}>
+                <DealCard deal={deal} storeName={storeMap[deal.storeID] || `Store ${deal.storeID}`} />
+                {i === 7 && <AdSlot />}
+              </Fragment>
             ))}
           </div>
           <div className="flex items-center justify-center gap-3 mt-4 font-mono text-xs">
