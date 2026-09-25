@@ -23,6 +23,7 @@ self.addEventListener('fetch', (event) => {
   const { request } = event
   if (request.method !== 'GET') return
   if (!request.url.startsWith(self.location.origin)) return
+  if (request.url.includes('/adstera-')) return
 
   if (request.mode === 'navigate') {
     event.respondWith(fetch(request).catch(() => caches.match('/index.html')))
