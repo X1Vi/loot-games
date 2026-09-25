@@ -9,6 +9,21 @@
   <body>
     <script type="text/javascript">
       if (window.self !== window.top) {
+        const reportRenderedAd = () => {
+          const creative = Array.from(document.querySelectorAll('iframe, img, video, canvas'))
+            .find((element) => {
+              const rect = element.getBoundingClientRect();
+              return rect.width >= 100 && rect.height >= 50;
+            });
+
+          if (creative) {
+            window.parent.postMessage({ type: 'loot-terminal-ad-rendered' }, '*');
+            adObserver.disconnect();
+          }
+        };
+        const adObserver = new MutationObserver(() => requestAnimationFrame(reportRenderedAd));
+        adObserver.observe(document.body, { childList: true, subtree: true });
+
         atOptions = {
           'key' : 'd73625c77be9cd66cfcef2a8841c08e2',
           'format' : 'iframe',

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react'
 import { TerminalHeader } from './components/TerminalHeader'
 import { FreeGames } from './components/FreeGames'
 import { Showcase } from './components/Showcase'
@@ -10,6 +10,19 @@ import { useLocalStorage } from './hooks/useLocalStorage'
 import type { TabId, ThemeId } from './types'
 
 import { Stats } from './components/Stats'
+
+const SCROLL_POSITIONS_KEY = 'loot-terminal-scroll-positions'
+
+function loadScrollPositions(): Partial<Record<TabId, number>> {
+  try {
+    const saved = JSON.parse(window.localStorage.getItem(SCROLL_POSITIONS_KEY) ?? '{}') as Record<string, unknown>
+    return Object.fromEntries(
+      Object.entries(saved).filter(([, value]) => typeof value === 'number' && Number.isFinite(value)),
+    ) as Partial<Record<TabId, number>>
+  } catch {
+    return {}
+  }
+}
 
 function TabContent({ tab }: { tab: TabId }) {
   switch (tab) {
@@ -30,18 +43,95 @@ function TabContent({ tab }: { tab: TabId }) {
 
 export default function App() {
   const [theme, setTheme] = useLocalStorage<ThemeId>('loot-terminal-theme', 'matrix')
-  const [activeTab, setActiveTab] = useState<TabId>('showcase')
+  const [activeTab, setActiveTab] = useLocalStorage<TabId>('loot-terminal-active-tab', 'showcase')
   const [status, setStatus] = useState('READY')
+  const mainRef = useRef<HTMLElement>(null)
+  const scrollPositionsRef = useRef(loadScrollPositions())
+  const scrollSaveTimerRef = useRef<number>(undefined)
+  const restoringScrollRef = useRef(false)
   const apiCount = 5
 
-  const handleTabChange = useCallback((tab: TabId) => {
-    setActiveTab(tab)
-    setStatus(`SWITCHED TO ${tab.toUpperCase()}`)
+  const persistScrollPositions = useCallback(() => {
+    try {
+      window.localStorage.setItem(SCROLL_POSITIONS_KEY, JSON.stringify(scrollPositionsRef.current))
+    } catch {
+      // localStorage full or unavailable
+    }
   }, [])
+
+  const saveScrollPosition = useCallback(
+    (tab: TabId) => {
+      if (!mainRef.current) return
+      scrollPositionsRef.current[tab] = mainRef.current.scrollTop
+      persistScrollPositions()
+    },
+    [persistScrollPositions],
+  )
+
+  const handleTabChange = useCallback(
+    (tab: TabId) => {
+      saveScrollPosition(activeTab)
+      setActiveTab(tab)
+      setStatus(`SWITCHED TO ${tab.toUpperCase()}`)
+    },
+    [activeTab, saveScrollPosition, setActiveTab],
+  )
+
+  const handleMainScroll = useCallback(() => {
+    if (!mainRef.current || restoringScrollRef.current) return
+    scrollPositionsRef.current[activeTab] = mainRef.current.scrollTop
+    window.clearTimeout(scrollSaveTimerRef.current)
+    scrollSaveTimerRef.current = window.setTimeout(persistScrollPositions, 150)
+  }, [activeTab, persistScrollPositions])
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
+
+  useLayoutEffect(() => {
+    const main = mainRef.current
+    if (!main) return
+
+    const target = scrollPositionsRef.current[activeTab] ?? 0
+    let animationFrame = 0
+    restoringScrollRef.current = true
+
+    const restore = () => {
+      main.scrollTop = target
+      if (target === 0 || Math.abs(main.scrollTop - target) <= 1) {
+        restoringScrollRef.current = false
+        observer.disconnect()
+        window.clearTimeout(timeout)
+      }
+    }
+
+    const observer = new MutationObserver(() => {
+      window.cancelAnimationFrame(animationFrame)
+      animationFrame = window.requestAnimationFrame(restore)
+    })
+    observer.observe(main, { childList: true, subtree: true })
+    animationFrame = window.requestAnimationFrame(restore)
+    const timeout = window.setTimeout(() => {
+      restoringScrollRef.current = false
+      observer.disconnect()
+    }, 5_000)
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame)
+      window.clearTimeout(timeout)
+      observer.disconnect()
+      restoringScrollRef.current = false
+    }
+  }, [activeTab])
+
+  useEffect(() => {
+    const saveBeforeLeaving = () => saveScrollPosition(activeTab)
+    window.addEventListener('pagehide', saveBeforeLeaving)
+    return () => {
+      window.removeEventListener('pagehide', saveBeforeLeaving)
+      window.clearTimeout(scrollSaveTimerRef.current)
+    }
+  }, [activeTab, saveScrollPosition])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -72,6 +162,8 @@ export default function App() {
       />
 
       <main
+        ref={mainRef}
+        onScroll={handleMainScroll}
         className="flex-1 overflow-y-auto relative"
         style={{ backgroundColor: 'var(--bg-primary)' }}
       >

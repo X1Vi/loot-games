@@ -6,6 +6,7 @@ import {
   fetchCheapSharkStores,
 } from '../api/cheapshark'
 import type { CheapSharkDeal } from '../types'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 import { AdSlot } from './AdSlot'
 
 function DealCard({ deal, storeName }: { deal: CheapSharkDeal; storeName: string }) {
@@ -117,7 +118,7 @@ export function Deals() {
   const [selectedStore, setSelectedStore] = useState('')
   const [searchTitle, setSearchTitle] = useState('')
   const [searchInput, setSearchInput] = useState('')
-  const [page, setPage] = useState(0)
+  const [page, setPage] = useLocalStorage<number>('loot-terminal-deals-page', 0)
 
   const stores = useApi(fetchCheapSharkStores, [], 'cheapshark:stores', 24 * 60 * 60_000)
 
