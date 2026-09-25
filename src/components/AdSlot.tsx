@@ -26,6 +26,7 @@ export function AdSlot({ label = 'SPONSORED' }: AdSlotProps) {
         src={page}
         width={width}
         height={height}
+        sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
         scrolling="no"
         loading="lazy"
         className="max-w-full"

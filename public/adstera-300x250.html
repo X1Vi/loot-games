@@ -2,19 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
     <title>Advertisement</title>
     <style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style>
   </head>
   <body>
     <script type="text/javascript">
-      atOptions = {
-        'key' : 'd73625c77be9cd66cfcef2a8841c08e2',
-        'format' : 'iframe',
-        'height' : 250,
-        'width' : 300,
-        'params' : {}
-      };
+      if (window.self !== window.top) {
+        atOptions = {
+          'key' : 'd73625c77be9cd66cfcef2a8841c08e2',
+          'format' : 'iframe',
+          'height' : 250,
+          'width' : 300,
+          'params' : {}
+        };
+        document.write('<scr' + 'ipt data-cfasync="false" type="text/javascript" src="https://www.highrevenueformat.com/d73625c77be9cd66cfcef2a8841c08e2/invoke.js"></scr' + 'ipt>');
+      }
     </script>
-    <script type="text/javascript" src="https://www.highrevenueformat.com/d73625c77be9cd66cfcef2a8841c08e2/invoke.js"></script>
   </body>
 </html>
