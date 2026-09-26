@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex" />
-    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>Advertisement</title>
     <style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style>
   </head>
@@ -11,9 +10,7 @@
     <script type="text/javascript">
       if (window.self !== window.top) {
         const reportRenderedAd = () => {
-          const creative = Array.from(document.querySelectorAll(
-            'iframe, img, video, canvas, object, embed, a[href], [onclick], [role="link"]'
-          ))
+          const creative = Array.from(document.querySelectorAll('iframe, img, video, canvas'))
             .find((element) => {
               const rect = element.getBoundingClientRect();
               return rect.width >= 100 && rect.height >= 50;
