@@ -8,7 +8,7 @@
     <style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style>
   </head>
   <body>
-    <script type="text/javascript">
+    <script>
       if (window.self !== window.top) {
         const reportRenderedAd = () => {
           const creative = Array.from(document.querySelectorAll(
@@ -16,7 +16,7 @@
           ))
             .find((element) => {
               const rect = element.getBoundingClientRect();
-              return rect.width >= 100 && rect.height >= 50;
+              return rect.width >= 100 && rect.height >= 40;
             });
 
           if (creative) {
@@ -28,13 +28,13 @@
         adObserver.observe(document.body, { childList: true, subtree: true });
 
         atOptions = {
-          'key' : 'd73625c77be9cd66cfcef2a8841c08e2',
+          'key' : '4c2207f34f4967c880c656d677a667ee',
           'format' : 'iframe',
-          'height' : 250,
-          'width' : 300,
+          'height' : 50,
+          'width' : 320,
           'params' : {}
         };
-        document.write('<scr' + 'ipt data-cfasync="false" type="text/javascript" src="https://www.highrevenueformat.com/d73625c77be9cd66cfcef2a8841c08e2/invoke.js"></scr' + 'ipt>');
+        document.write('<scr' + 'ipt data-cfasync="false" src="https://www.highrevenueformat.com/4c2207f34f4967c880c656d677a667ee/invoke.js"></scr' + 'ipt>');
       }
     </script>
   </body>

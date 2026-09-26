@@ -325,7 +325,11 @@ export function Deals() {
             {deals.data.map((deal, i) => (
               <Fragment key={deal.dealID}>
                 <DealCard deal={deal} storeName={storeMap[deal.storeID] || `Store ${deal.storeID}`} />
-                {i === 7 && <AdSlot />}
+                {i === 7 && (
+                  <div className="lg:col-span-2 flex justify-center">
+                    <AdSlot format="responsive-banner" />
+                  </div>
+                )}
               </Fragment>
             ))}
           </div>

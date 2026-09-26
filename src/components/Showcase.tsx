@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { useApi } from '../hooks/useApi'
 import { useNewKeys } from '../hooks/useNewKeys'
@@ -10,6 +10,7 @@ import { downloadIcs } from '../lib/ics'
 import { LIFE_SYS_URL } from '../lib/links'
 import type { MergedGame } from '../lib/normalize'
 import type { FreeGame, EpicGame, SteamDBItem, ITADItem } from '../types'
+import { AdSlot } from './AdSlot'
 
 type SortMode = 'value' | 'new' | 'expiring' | 'sources'
 
@@ -311,7 +312,14 @@ export function Showcase() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {games.map((game, i) => (
-            <ShowcaseCard key={game.canonicalKey} game={game} isNew={newKeys.has(game.canonicalKey)} rank={i + 1} />
+            <Fragment key={game.canonicalKey}>
+              <ShowcaseCard game={game} isNew={newKeys.has(game.canonicalKey)} rank={i + 1} />
+              {i === 7 && (
+                <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4 flex justify-center">
+                  <AdSlot format="responsive-banner" />
+                </div>
+              )}
+            </Fragment>
           ))}
           <DevSpotlightCard />
         </div>
