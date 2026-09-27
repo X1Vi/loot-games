@@ -171,24 +171,43 @@ export default function App() {
       </main>
 
       <footer
-        className="border-t px-4 py-1 flex items-center justify-between text-xs font-mono shrink-0"
+        className="border-t px-2 sm:px-4 py-1 flex items-center gap-2 sm:gap-4 text-xs font-mono shrink-0"
         style={{
           borderColor: 'var(--border-subtle)',
           backgroundColor: 'var(--bg-header)',
         }}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex shrink-0 items-center gap-4">
           <span style={{ color: 'var(--fg-dim)' }}>
             [{activeTab.toUpperCase()}]
           </span>
-          <span style={{ color: 'var(--fg-muted)' }}>
+          <span className="hidden md:inline" style={{ color: 'var(--fg-muted)' }}>
             STATUS: {status}
           </span>
         </div>
-        <div className="flex items-center gap-4" style={{ color: 'var(--fg-faint)' }}>
-          <SocialLinks />
-          <span className="hidden md:inline">APIS: {apiCount}</span>
-          <span className="hidden sm:inline">LOOT TERMINAL v2.0.0</span>
+
+        <a
+          href="https://launchfree.io/listings/your-launch.html"
+          target="_blank"
+          rel="noopener"
+          className="ml-auto shrink-0 opacity-85 transition-opacity hover:opacity-100 focus-visible:opacity-100"
+          aria-label="View Loot Terminal on The Runway at LaunchFree.io"
+        >
+          <img
+            src="https://launchfree.io/badge-dark.svg"
+            alt="Listed on The Runway - LaunchFree.io"
+            width="250"
+            height="56"
+            className="h-auto w-[130px] sm:w-[160px] lg:w-[180px]"
+          />
+        </a>
+
+        <div className="flex shrink-0 items-center gap-4" style={{ color: 'var(--fg-faint)' }}>
+          <div className="hidden lg:block">
+            <SocialLinks />
+          </div>
+          <span className="hidden xl:inline">APIS: {apiCount}</span>
+          <span className="hidden xl:inline">LOOT TERMINAL v2.0.0</span>
           <span
             className="inline-block w-2 h-4 animate-pulse"
             style={{ backgroundColor: 'var(--fg-primary)' }}
