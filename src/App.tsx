@@ -187,7 +187,7 @@ export default function App() {
         </div>
 
         <a
-          href="https://launchfree.io/listings/your-launch.html"
+          href="https://launchfree.io/listings/loot-games.html"
           target="_blank"
           rel="noopener"
           className="ml-auto shrink-0 opacity-85 transition-opacity hover:opacity-100 focus-visible:opacity-100"
