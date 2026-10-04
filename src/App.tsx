@@ -7,6 +7,7 @@ import { Compare } from './components/Compare'
 import { About } from './components/About'
 import { SocialLinks } from './components/SocialLinks'
 import { useLocalStorage } from './hooks/useLocalStorage'
+import { tabForDeepLink } from './lib/deeplink'
 import type { TabId, ThemeId } from './types'
 
 import { Stats } from './components/Stats'
@@ -87,6 +88,13 @@ export default function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
+
+  useEffect(() => {
+    const linkedTab = tabForDeepLink(window.location.search)
+    if (linkedTab !== null) {
+      setActiveTab(linkedTab)
+    }
+  }, [setActiveTab])
 
   useLayoutEffect(() => {
     const main = mainRef.current
@@ -200,6 +208,16 @@ export default function App() {
             height="56"
             className="h-auto w-[130px] sm:w-[160px] lg:w-[180px]"
           />
+        </a>
+
+        <a
+          href="https://product-catalogue.x1vi.workers.dev/?ref=loot-terminal"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden shrink-0 hover:underline sm:inline"
+          style={{ color: 'var(--fg-faint)' }}
+        >
+          MORE FROM THE CREATOR <span aria-hidden="true">↗</span>
         </a>
 
         <div className="flex shrink-0 items-center gap-4" style={{ color: 'var(--fg-faint)' }}>

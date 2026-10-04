@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { useApi } from '../hooks/useApi'
+import { useStoreHealth } from '../hooks/useStoreHealth'
 import { useUrlParam } from '../hooks/useUrlParam'
 import {
   cheapsharkDealUrl,
@@ -10,7 +11,10 @@ import {
 } from '../api/cheapshark'
 import { buildStoreComparison, formatPrice, summarizeComparison } from '../lib/compare'
 import type { StorePriceRow } from '../lib/compare'
+import { buildGameLink, pickGameMatch } from '../lib/deeplink'
+import { STORE_DISCLOSURE, storeDealUrl, storeGameUrl } from '../lib/store'
 import type { CheapSharkSearchResultWithStore } from '../types'
+import { ShareButton } from './ShareButton'
 
 const QUICK_PICKS = [
   'Cyberpunk 2077',
@@ -58,17 +62,22 @@ function PriceRow({
   rank,
   row,
   maxPrice,
+  storeHealthy,
 }: {
   rank: number
   row: StorePriceRow
   maxPrice: number
+  storeHealthy: boolean
 }) {
   const pct = maxPrice > 0 ? Math.min(100, (row.price / maxPrice) * 100) : 0
   const savings = Math.round(row.savingsPct)
+  const href =
+    storeDealUrl({ dealID: row.dealID, storeID: row.storeID }, 'compare', storeHealthy) ??
+    cheapsharkDealUrl(row.dealID)
 
   return (
     <a
-      href={cheapsharkDealUrl(row.dealID)}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       className="block border px-3 py-2 transition-colors"
@@ -217,9 +226,11 @@ function SearchResults({
 
 export function Compare() {
   const [gameID, setGameID] = useUrlParam('game', '')
-  const [query, setQuery] = useState('')
-  const [term, setTerm] = useState('')
+  const [linkedQuery, setLinkedQuery] = useUrlParam('q', '')
+  const [query, setQuery] = useState(gameID ? '' : linkedQuery)
+  const [term, setTerm] = useState(gameID ? '' : linkedQuery)
 
+  const storeHealthy = useStoreHealth()
   const stores = useApi(fetchCheapSharkStores, [], 'cheapshark:stores', 24 * 60 * 60_000)
 
   const search = useApi(
@@ -230,6 +241,18 @@ export function Compare() {
     [term],
     'cheapshark:game-search',
   )
+
+  useEffect(() => {
+    if (gameID !== '' || linkedQuery.trim() === '' || !search.data || search.data.length === 0) {
+      return
+    }
+    const match = pickGameMatch(linkedQuery, search.data)
+    if (match === null) return
+    setGameID(match)
+    setLinkedQuery('')
+    setQuery('')
+    setTerm('')
+  }, [gameID, linkedQuery, search.data, setGameID, setLinkedQuery])
 
   const details = useApi(
     () => (gameID ? fetchCheapSharkGame(gameID) : Promise.resolve(null)),
@@ -264,11 +287,13 @@ export function Compare() {
   const maxPrice = useMemo(() => Math.max(...rows.map((r) => r.price), 0.01), [rows])
 
   const runSearch = (value: string) => {
+    setLinkedQuery('')
     setQuery(value)
     setTerm(value)
   }
 
   const selectGame = (id: string) => {
+    setLinkedQuery('')
     setGameID(id)
     setQuery('')
     setTerm('')
@@ -450,6 +475,36 @@ export function Compare() {
                     ★ AT HISTORIC LOW
                   </span>
                 )}
+                <div className="ml-auto flex items-center gap-2">
+                  <a
+                    href={storeGameUrl(details.data.info.title)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] font-mono px-1.5 py-0.5 border transition-colors"
+                    style={{ color: 'var(--fg-dim)', borderColor: 'var(--border-mid)' }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = 'var(--fg-primary)'
+                      e.currentTarget.style.borderColor = 'var(--border-bright)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'var(--fg-dim)'
+                      e.currentTarget.style.borderColor = 'var(--border-mid)'
+                    }}
+                  >
+                    STORE ↗
+                  </a>
+                  <ShareButton
+                    payload={{
+                      title: `${details.data.info.title} — Loot Terminal`,
+                      text: summary.cheapest
+                        ? `${details.data.info.title} from ${formatPrice(summary.cheapest.price)} at ${summary.cheapest.storeName}`
+                        : details.data.info.title,
+                      url: buildGameLink(gameID),
+                      tags: ['gaming', 'deals', 'pcgaming'],
+                      source: 'loot-games',
+                    }}
+                  />
+                </div>
               </div>
               <div className="flex flex-wrap gap-x-6 gap-y-2 mt-3">
                 <Stat
@@ -498,11 +553,18 @@ export function Compare() {
             <>
               <div className="space-y-1.5">
                 {rows.map((row, i) => (
-                  <PriceRow key={row.dealID} rank={i + 1} row={row} maxPrice={maxPrice} />
+                  <PriceRow
+                    key={row.dealID}
+                    rank={i + 1}
+                    row={row}
+                    maxPrice={maxPrice}
+                    storeHealthy={storeHealthy}
+                  />
                 ))}
               </div>
               <div className="mt-2 text-[10px] font-mono" style={{ color: 'var(--fg-faint)' }}>
                 Bars scaled to the highest listed price. Click a row to open the deal on that store.
+                Deals open through the X1VI Store when available. {STORE_DISCLOSURE}
               </div>
             </>
           )}

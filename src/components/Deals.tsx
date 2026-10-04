@@ -7,19 +7,35 @@ import {
 } from '../api/cheapshark'
 import type { CheapSharkDeal } from '../types'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useStoreHealth } from '../hooks/useStoreHealth'
+import { buildGameLink, buildGameSearchLink } from '../lib/deeplink'
+import { STORE_DISCLOSURE, storeDealUrl } from '../lib/store'
 import { AdSlot } from './AdSlot'
+import { ShareButton } from './ShareButton'
 
-function DealCard({ deal, storeName }: { deal: CheapSharkDeal; storeName: string }) {
+function DealCard({
+  deal,
+  storeName,
+  storeHealthy,
+}: {
+  deal: CheapSharkDeal
+  storeName: string
+  storeHealthy: boolean
+}) {
   const savings = Math.round(Number(deal.savings))
   const salePrice = Number(deal.salePrice)
   const normalPrice = Number(deal.normalPrice)
+  const href =
+    storeDealUrl({ dealID: deal.dealID, storeID: deal.storeID }, 'deal-card', storeHealthy) ??
+    cheapsharkDealUrl(deal.dealID)
+  const shareUrl =
+    deal.gameID && deal.gameID !== '0'
+      ? buildGameLink(deal.gameID)
+      : buildGameSearchLink(deal.title)
 
   return (
-    <a
-      href={cheapsharkDealUrl(deal.dealID)}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block border p-3 transition-colors group"
+    <div
+      className="border transition-colors"
       style={{
         borderColor: 'var(--border-subtle)',
         backgroundColor: 'var(--bg-card)',
@@ -31,60 +47,73 @@ function DealCard({ deal, storeName }: { deal: CheapSharkDeal; storeName: string
         e.currentTarget.style.borderColor = 'var(--border-subtle)'
       }}
     >
-      <div className="flex gap-3">
-        {deal.thumb && (
-          <img
-            src={deal.thumb}
-            alt={deal.title}
-            className="w-16 h-9 object-cover border flex-shrink-0"
-            style={{ borderColor: 'var(--border-subtle)' }}
-            loading="lazy"
-          />
-        )}
-        <div className="min-w-0 flex-1">
-          <div
-            className="text-sm font-mono truncate group-hover:underline"
-            style={{ color: 'var(--fg-primary)' }}
-          >
-            {deal.title}
-          </div>
-          <div className="flex flex-wrap gap-2 mt-1 text-xs font-mono">
-            <span
-              className="px-1.5 py-0.5"
-              style={{
-                color: 'var(--fg-muted)',
-                backgroundColor: 'var(--accent-bg)',
-              }}
+      <a href={href} target="_blank" rel="noopener noreferrer" className="block p-3 group">
+        <div className="flex gap-3">
+          {deal.thumb && (
+            <img
+              src={deal.thumb}
+              alt={deal.title}
+              className="w-16 h-9 object-cover border flex-shrink-0"
+              style={{ borderColor: 'var(--border-subtle)' }}
+              loading="lazy"
+            />
+          )}
+          <div className="min-w-0 flex-1">
+            <div
+              className="text-sm font-mono truncate group-hover:underline"
+              style={{ color: 'var(--fg-primary)' }}
             >
-              {storeName}
-            </span>
-            {deal.steamRatingPercent && Number(deal.steamRatingPercent) > 0 && (
-              <span style={{ color: 'var(--fg-faint)' }}>
-                {deal.steamRatingPercent}% ✓
+              {deal.title}
+            </div>
+            <div className="flex flex-wrap gap-2 mt-1 text-xs font-mono">
+              <span
+                className="px-1.5 py-0.5"
+                style={{
+                  color: 'var(--fg-muted)',
+                  backgroundColor: 'var(--accent-bg)',
+                }}
+              >
+                {storeName}
               </span>
-            )}
-            {deal.metacriticScore && Number(deal.metacriticScore) > 0 && (
-              <span style={{ color: 'var(--accent-yellow)' }}>
-                MC {deal.metacriticScore}
+              {deal.steamRatingPercent && Number(deal.steamRatingPercent) > 0 && (
+                <span style={{ color: 'var(--fg-faint)' }}>
+                  {deal.steamRatingPercent}% ✓
+                </span>
+              )}
+              {deal.metacriticScore && Number(deal.metacriticScore) > 0 && (
+                <span style={{ color: 'var(--accent-yellow)' }}>
+                  MC {deal.metacriticScore}
+                </span>
+              )}
+            </div>
+            <div className="mt-1 flex items-center gap-2 text-xs font-mono">
+              <span style={{ color: 'var(--fg-primary)' }}>
+                ${salePrice.toFixed(2)}
               </span>
-            )}
-          </div>
-          <div className="mt-1 flex items-center gap-2 text-xs font-mono">
-            <span style={{ color: 'var(--fg-primary)' }}>
-              ${salePrice.toFixed(2)}
-            </span>
-            <span style={{ color: 'var(--fg-faint)', textDecoration: 'line-through' }}>
-              ${normalPrice.toFixed(2)}
-            </span>
-            {savings > 0 && (
-              <span style={{ color: 'var(--accent-green)' }}>
-                -{savings}%
+              <span style={{ color: 'var(--fg-faint)', textDecoration: 'line-through' }}>
+                ${normalPrice.toFixed(2)}
               </span>
-            )}
+              {savings > 0 && (
+                <span style={{ color: 'var(--accent-green)' }}>
+                  -{savings}%
+                </span>
+              )}
+            </div>
           </div>
         </div>
+      </a>
+      <div className="px-3 pb-2 flex justify-end">
+        <ShareButton
+          payload={{
+            title: `${deal.title} — Loot Terminal`,
+            text: `${deal.title} — $${salePrice.toFixed(2)} (${savings}% off) at ${storeName}`,
+            url: shareUrl,
+            tags: ['gaming', 'deals', 'freegames'],
+            source: 'loot-games',
+          }}
+        />
       </div>
-    </a>
+    </div>
   )
 }
 
@@ -112,6 +141,7 @@ function inputClasses() {
 }
 
 export function Deals() {
+  const storeHealthy = useStoreHealth()
   const [sortBy, setSortBy] = useState('Deal Rating')
   const [maxPrice, setMaxPrice] = useState('15')
   const [minRating, setMinRating] = useState('0')
@@ -324,7 +354,11 @@ export function Deals() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
             {deals.data.map((deal, i) => (
               <Fragment key={deal.dealID}>
-                <DealCard deal={deal} storeName={storeMap[deal.storeID] || `Store ${deal.storeID}`} />
+                <DealCard
+                  deal={deal}
+                  storeName={storeMap[deal.storeID] || `Store ${deal.storeID}`}
+                  storeHealthy={storeHealthy}
+                />
                 {i === 7 && (
                   <div className="lg:col-span-2 flex justify-center">
                     <AdSlot format="responsive-banner" />
@@ -332,6 +366,9 @@ export function Deals() {
                 )}
               </Fragment>
             ))}
+          </div>
+          <div className="mt-3 text-[10px] font-mono" style={{ color: 'var(--fg-faint)' }}>
+            Deals open through the X1VI Store when available. {STORE_DISCLOSURE}
           </div>
           <div className="flex items-center justify-center gap-3 mt-4 font-mono text-xs">
             <button

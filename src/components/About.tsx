@@ -1,5 +1,6 @@
 import { SocialLinks } from './SocialLinks'
 import { LIFE_SYS_URL } from '../lib/links'
+import { STORE_ORIGIN } from '../lib/store'
 
 export function About() {
   return (
@@ -64,6 +65,12 @@ export function About() {
 [ PROJECTS ]
   LIFE.SYS — stocks + life sim, free in browser
   https://x1vi.itch.io/life-sim
+
+[ X1VI STORE ]
+  Deals can open through the shared X1VI Store.
+  ${STORE_ORIGIN}
+  Some outbound links are affiliate links; X1VI may earn a
+  commission at no additional cost to you.
 
 [ ACKNOWLEDGMENTS ]
   This project aggregates APIs from:
